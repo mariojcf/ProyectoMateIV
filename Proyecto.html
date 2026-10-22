@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto Final Matemática IV | Universidad Mesoamericana</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        mars: {
+                            50: '#fff1ed',
+                            100: '#ffe0d5',
+                            500: '#ff5722',
+                            600: '#e64a19',
+                            700: '#bf360c',
+                            900: '#871c03'
+                        },
+                        umes: {
+                            DEFAULT: '#006a4e',
+                            dark: '#004d37',
+                            light: '#008765'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Three.js CDN for 3D Terrain & Sólidos -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mars-gradient {
+            background: linear-gradient(135deg, #0d0d0d 0%, #161210 50%, #200f0b 100%);
+        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #121212; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ff5722; }
+    </style>
+</head>
+<body class="mars-gradient text-gray-100 min-h-screen flex flex-col antialiased selection:bg-mars-500 selection:text-white">
+
+    <!-- ENCABEZADO INSTITUCIONAL -->
+    <header class="border-b border-gray-800 bg-gray-950/90 backdrop-blur sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 rounded-2xl bg-umes flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-umes/40 border border-umes-light/30">
+                    <i class="fa-solid fa-atom"></i>
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs uppercase tracking-widest text-mars-500 font-bold">Universidad Mesoamericana</span>
+                        <span class="text-xs text-gray-500">•</span>
+                        <span class="text-xs text-gray-400 font-medium">Facultad de Ingeniería</span>
+                    </div>
+                    <h1 class="text-xl font-extrabold tracking-wide text-white">Proyecto Final Mate <span class="text-xs px-2 py-0.5 bg-umes/20 text-umes-light rounded-md border border-umes/40 font-mono ml-2">Proyecto Final 2026</span></h1>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3">
+                <div class="text-right bg-gray-900/90 px-4 py-2 rounded-xl border border-gray-800 text-xs">
+                    <span class="text-gray-400 block">Docente: <strong class="text-gray-200">ScD. Juan Carlos Ruiz Castillo</strong></span>
+                    <span class="text-gray-400 block">Curso: <strong class="text-umes-light">Matemática IV</strong></span>
+                </div>
+                <button onclick="openAuthorsModal()" class="px-4 py-2.5 bg-umes hover:bg-umes-dark text-white font-medium rounded-xl text-xs transition-all flex items-center shadow-lg shadow-umes/30">
+                    <i class="fa-solid fa-users mr-2"></i> Ver Autores
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- NAVEGACIÓN DE PESTAÑAS (TABS) -->
+    <nav class="bg-gray-900/60 border-b border-gray-800 sticky top-[73px] z-30 backdrop-blur">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex overflow-x-auto space-x-2 py-3">
+            <button onclick="switchTab('tab-3d')" id="btn-tab-3d" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap bg-mars-600 text-white shadow-lg shadow-mars-600/30 flex items-center">
+                <i class="fa-solid fa-cube mr-2"></i> 1. Visualizador Terreno 3D
+            </button>
+            <button onclick="switchTab('tab-diff')" id="btn-tab-diff" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap bg-gray-900 text-gray-400 hover:text-white hover:bg-gray-800 flex items-center">
+                <i class="fa-solid fa-chart-line mr-2"></i> 2. Análisis Diferencial & Gradiente
+            </button>
+            <button onclick="switchTab('tab-opt')" id="btn-tab-opt" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap bg-gray-900 text-gray-400 hover:text-white hover:bg-gray-800 flex items-center">
+                <i class="fa-solid fa-bullseye mr-2"></i> 3. Optimización & Base Óptima
+            </button>
+            <button onclick="switchTab('tab-rover')" id="btn-tab-rover" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap bg-gray-900 text-gray-400 hover:text-white hover:bg-gray-800 flex items-center">
+                <i class="fa-solid fa-car-tunnel mr-2"></i> 4. Ruta Espacial Rover
+            </button>
+            <button onclick="switchTab('tab-int')" id="btn-tab-int" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap bg-gray-900 text-gray-400 hover:text-white hover:bg-gray-800 flex items-center">
+                <i class="fa-solid fa-shapes mr-2"></i> 5. Integrales Dobles & Triples (3D)
+            </button>
+            <button onclick="switchTab('tab-def')" id="btn-tab-def" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap bg-gray-900 text-gray-400 hover:text-white hover:bg-gray-800 flex items-center">
+                <i class="fa-solid fa-graduation-cap mr-2"></i> 6. Defensa & Conclusiones
+            </button>
+        </div>
+    </nav>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <!-- PESTAÑA 1: VISUALIZADOR 3D DE TERRENO -->
+        <section id="tab-3d" class="tab-content space-y-6">
+            <div class="bg-gray-900/90 border border-gray-800 rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 pb-4 border-b border-gray-800 gap-4">
+                    <div>
+                        <span class="text-xs uppercase tracking-widest text-mars-500 font-bold">Fase I y II del Proyecto</span>
+                        <h2 class="text-2xl font-bold text-white mt-1">Renderizado 3D en Tiempo Real del Terreno Marciano</h2>
+                    </div>
+                    <div class="bg-gray-950 px-4 py-2.5 rounded-2xl border border-gray-800 text-xs overflow-x-auto">
+                        <code class="text-umes-light font-mono">f(x,y) = 20 + 8e<sup>-((x-3)²+(y-7)²)/4</sup> - 6e<sup>-((x-7)²+(y-3)²)/4</sup> + 0.5x + 0.3y</code>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    <!-- Canvas 3D Three.js -->
+                    <div class="lg:col-span-8 bg-black/90 rounded-2xl border border-gray-800 relative overflow-hidden h-[450px] shadow-2xl flex items-center justify-center">
+                        <div id="webgl-container" class="w-full h-full cursor-grab active:cursor-grabbing"></div>
+                        <div class="absolute top-4 left-4 bg-gray-950/85 backdrop-blur px-3 py-1.5 rounded-xl border border-gray-800 text-xs text-gray-300 pointer-events-none flex items-center space-x-2">
+                            <i class="fa-solid fa-cube text-mars-500"></i>
+                            <span>Arrastra para rotar • Scroll para zoom</span>
+                        </div>
+                        <div class="absolute bottom-4 right-4 flex space-x-2">
+                            <button onclick="resetCamera3D()" class="px-3 py-1.5 bg-gray-900/90 hover:bg-gray-800 border border-gray-700 rounded-xl text-xs font-semibold text-gray-200 transition-all shadow-lg">
+                                <i class="fa-solid fa-rotate mr-1 text-umes-light"></i> Centrar Vista
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Controles y Leyenda 3D -->
+                    <div class="lg:col-span-4 space-y-6">
+                        <div class="bg-gray-950/80 p-6 rounded-2xl border border-gray-800 space-y-4">
+                            <h3 class="text-sm font-semibold text-gray-200 flex items-center">
+                                <i class="fa-solid fa-sliders mr-2 text-mars-500"></i> Opciones de Visualización
+                            </h3>
+                            <div class="space-y-3 text-sm">
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="checkbox" id="toggle-wireframe" onchange="toggleTerrainWireframe()" class="w-4 h-4 rounded bg-gray-800 border-gray-700 text-mars-500 focus:ring-mars-500">
+                                    <span class="text-gray-300 text-xs">Mostrar Malla Estructural (Wireframe)</span>
+                                </label>
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="checkbox" id="toggle-points" checked onchange="toggleTerrainPoints()" class="w-4 h-4 rounded bg-gray-800 border-gray-700 text-umes-light focus:ring-umes-light">
+                                    <span class="text-gray-300 text-xs">Destacar Puntos Críticos (P₁, P₂, P₃)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-950/80 p-6 rounded-2xl border border-gray-800 space-y-3">
+                            <h3 class="text-xs uppercase tracking-wider text-gray-400 font-semibold"><i class="fa-solid fa-map-pin mr-1 text-mars-500"></i> Leyenda de Puntos:</h3>
+                            <ul class="text-xs space-y-2 text-gray-300">
+                                <li class="flex items-center justify-between bg-gray-900 p-2 rounded-xl border border-gray-800">
+                                    <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-red-600 inline-block mr-2"></span> <strong>P₁(3,7)</strong> (Cresta)</span>
+                                    <span class="font-mono text-mars-500">z = 31.598</span>
+                                </li>
+                                <li class="flex items-center justify-between bg-gray-900 p-2 rounded-xl border border-gray-800">
+                                    <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-blue-500 inline-block mr-2"></span> <strong>P₂(7,3)</strong> (Depresión)</span>
+                                    <span class="font-mono text-blue-400">z = 18.403</span>
+                                </li>
+                                <li class="flex items-center justify-between bg-umes/10 p-2 rounded-xl border border-umes/40">
+                                    <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block mr-2"></span> <strong class="text-umes-light">P₃(5,5)</strong> (Base Óptima)</span>
+                                    <span class="font-mono text-umes-light font-bold">z = 24.271</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA 2: ANÁLISIS DIFERENCIAL -->
+        <section id="tab-diff" class="tab-content hidden space-y-6">
+            <div class="bg-gray-900/90 border border-gray-800 rounded-3xl p-6 sm:p-8 shadow-xl">
+                <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-800">
+                    <div>
+                        <span class="text-xs uppercase tracking-widest text-umes-light font-bold">Fase II del Proyecto</span>
+                        <h2 class="text-2xl font-bold text-white mt-1">Calculadora de Derivadas Parciales, Gradiente y Plano Tangente</h2>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <div class="lg:col-span-5 bg-gray-950/80 p-6 rounded-2xl border border-gray-800 space-y-6">
+                        <h3 class="text-md font-semibold text-gray-200"><i class="fa-solid fa-calculator mr-2 text-umes-light"></i> Punto de Evaluación $(x_0, y_0)$</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <label class="text-gray-400">Coordenada X₀ (km):</label>
+                                    <span id="diff-x-val" class="text-umes-light font-mono font-bold">5.0</span>
+                                </div>
+                                <input type="range" id="diff-x" min="0" max="10" step="0.1" value="5.0" oninput="calculateDifferential()" class="w-full h-2 bg-gray-800 rounded-lg accent-umes-light">
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <label class="text-gray-400">Coordenada Y₀ (km):</label>
+                                    <span id="diff-y-val" class="text-mars-500 font-mono font-bold">5.0</span>
+                                </div>
+                                <input type="range" id="diff-y" min="0" max="10" step="0.1" value="5.0" oninput="calculateDifferential()" class="w-full h-2 bg-gray-800 rounded-lg accent-mars-500">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 pt-2 border-t border-gray-800">
+                            <button onclick="setDiffPoint(3, 7)" class="px-3 py-2 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-200">P₁(3,7)</button>
+                            <button onclick="setDiffPoint(7, 3)" class="px-3 py-2 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-200">P₂(7,3)</button>
+                            <button onclick="setDiffPoint(5, 5)" class="px-3 py-2 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-200">P₃(5,5)</button>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-7 space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="bg-gray-950 p-5 rounded-2xl border border-gray-800">
+                                <span class="text-xs text-gray-400">Elevación Exacta f(x₀, y₀):</span>
+                                <div id="diff-z" class="text-2xl font-bold text-mars-500 font-mono mt-1">24.271 km</div>
+                            </div>
+                            <div class="bg-gray-950 p-5 rounded-2xl border border-gray-800">
+                                <span class="text-xs text-gray-400">Vector Gradiente ∇f(x₀, y₀):</span>
+                                <div id="diff-grad" class="text-xl font-bold text-umes-light font-mono mt-1">(-1.39, 2.19)</div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-950 p-6 rounded-2xl border border-gray-800">
+                            <span class="text-xs text-gray-400">Plano Tangente en P₀:</span>
+                            <div id="diff-plane" class="bg-gray-900 p-3 mt-2 rounded-xl border border-gray-800 font-mono text-xs text-umes-light">z = 24.271 - 1.39(x - 5.0) + 2.19(y - 5.0)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA 3: OPTIMIZACIÓN -->
+        <section id="tab-opt" class="tab-content hidden space-y-6">
+            <div class="bg-gray-900/90 border border-gray-800 rounded-3xl p-6 sm:p-8 shadow-xl">
+                <h2 class="text-2xl font-bold text-white mb-6">Selección Óptima de la Base Científica</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="border-b border-gray-800 text-gray-400">
+                                <th class="py-3 px-4">Punto</th>
+                                <th class="py-3 px-4">Coordenadas</th>
+                                <th class="py-3 px-4">Elevación z</th>
+                                <th class="py-3 px-4">Discriminante D</th>
+                                <th class="py-3 px-4">Clasificación</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-800 text-gray-300">
+                            <tr><td class="py-3 px-4 font-bold">P₁</td><td class="py-3 px-4 font-mono">(3, 7)</td><td class="py-3 px-4 font-mono text-mars-500">31.598</td><td class="py-3 px-4 font-mono">1.0305 > 0</td><td>Máximo Local</td></tr>
+                            <tr><td class="py-3 px-4 font-bold">P₂</td><td class="py-3 px-4 font-mono">(7, 3)</td><td class="py-3 px-4 font-mono text-blue-400">18.403</td><td class="py-3 px-4 font-mono">-2.21 < 0</td><td>Punto de Silla</td></tr>
+                            <tr class="bg-umes/10 border-l-4 border-umes"><td class="py-3 px-4 font-bold text-umes-light">P₃ (Óptimo)</td><td class="py-3 px-4 font-mono">(5, 5)</td><td class="py-3 px-4 font-mono text-umes-light font-bold">24.271</td><td class="py-3 px-4 font-mono">15.30 > 0</td><td><strong class="text-umes-light">Seleccionado para la Base</strong></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA 4: RUTA ROVER -->
+        <section id="tab-rover" class="tab-content hidden space-y-6">
+            <div class="bg-gray-900/90 border border-gray-800 rounded-3xl p-6 sm:p-8 shadow-xl">
+                <h2 class="text-2xl font-bold text-white mb-6">Simulación de Trayectoria Tridimensional r(t)</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-gray-950 p-6 rounded-2xl border border-gray-800 space-y-4">
+                        <label class="text-gray-400 text-sm">Parámetro t: <span id="rover-t-val" class="text-mars-500 font-bold">1.00</span></label>
+                        <input type="range" id="rover-t" min="0" max="6.28" step="0.05" value="1.0" oninput="updateRoverSimulation()" class="w-full h-2 bg-gray-800 rounded-lg accent-mars-500">
+                    </div>
+                    <div class="bg-gray-950 p-6 rounded-2xl border border-gray-800 grid grid-cols-2 gap-4">
+                        <div><span class="text-xs text-gray-400">Velocidad:</span><div id="rover-vel" class="text-lg font-bold text-umes-light font-mono mt-1">2.145 km/s</div></div>
+                        <div><span class="text-xs text-gray-400">Curvatura κ:</span><div id="rover-curv" class="text-lg font-bold text-mars-500 font-mono mt-1">0.482 m⁻¹</div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA 5: INTEGRALES -->
+        <section id="tab-int" class="tab-content hidden space-y-6">
+            <div class="bg-gray-900/90 border border-gray-800 rounded-3xl p-6 sm:p-8 shadow-xl">
+                <h2 class="text-2xl font-bold text-white mb-6">Integrales Dobles y Sólido Volumétrico 3D</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-6 bg-black/90 rounded-2xl border border-gray-800 h-[350px] flex items-center justify-center relative overflow-hidden">
+                        <div id="solid-container" class="w-full h-full"></div>
+                    </div>
+                    <div class="lg:col-span-6 space-y-4">
+                        <div class="bg-gray-950 p-5 rounded-2xl border border-gray-800">
+                            <span class="text-xs text-gray-400">Volumen del Terreno (Doble):</span>
+                            <div class="text-xl font-bold text-mars-500 font-mono mt-1">2,427.10 km³</div>
+                        </div>
+                        <div class="bg-gray-950 p-5 rounded-2xl border border-gray-800">
+                            <span class="text-xs text-gray-400">Volumen Cúpula E (Triple):</span>
+                            <div class="text-xl font-bold text-white font-mono mt-1">523.60 m³</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA 6: DEFENSA -->
+        <section id="tab-def" class="tab-content hidden space-y-6">
+            <div class="bg-gray-900/90 border border-gray-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
+                <h2 class="text-2xl font-bold text-white">Conclusiones de Ingeniería y Defensa</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-gray-950 p-6 rounded-2xl border border-gray-800">
+                        <h3 class="font-bold text-white mb-2">1. Estabilidad</h3>
+                        <p class="text-gray-300 text-xs">El discriminante D > 0 asegura máximo local estable en P₃(5,5).</p>
+                    </div>
+                    <div class="bg-gray-950 p-6 rounded-2xl border border-gray-800">
+                        <h3 class="font-bold text-white mb-2">2. Energía</h3>
+                        <p class="text-gray-300 text-xs">Optimización de paneles mediante área real de superficie.</p>
+                    </div>
+                    <div class="bg-gray-950 p-6 rounded-2xl border border-gray-800">
+                        <h3 class="font-bold text-white mb-2">3. Tránsito</h3>
+                        <p class="text-gray-300 text-xs">Control de pendientes límite con el vector gradiente del rover.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL AUTORES -->
+    <div id="authors-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md hidden">
+        <div class="bg-gray-900 border border-umes/50 rounded-3xl p-8 max-w-lg w-full mx-4 shadow-2xl relative">
+            <button onclick="closeAuthorsModal()" class="absolute top-6 right-6 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-xl font-bold text-white mb-4">Integrantes del Equipo</h3>
+            <ul class="space-y-2 text-sm text-gray-200">
+                <li class="bg-gray-950 p-3 rounded-xl border border-gray-800">Heidi Gabriela Maldonado Santizo</li>
+                <li class="bg-gray-950 p-3 rounded-xl border border-gray-800">Mario Javier Corado Falla</li>
+                <li class="bg-gray-950 p-3 rounded-xl border border-gray-800">Paola Giselle Lucas Minera</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE THREE.JS Y LOGICA -->
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            document.querySelectorAll('nav button').forEach(btn => {
+                btn.className = "px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap bg-gray-900 text-gray-400 hover:text-white hover:bg-gray-800 flex items-center";
+            });
+            document.getElementById('btn-' + tabId).className = "px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap bg-mars-600 text-white shadow-lg shadow-mars-600/30 flex items-center";
+
+            // Forzar recálculo del renderizador Three.js al cambiar de pestaña
+            setTimeout(() => {
+                if(tabId === 'tab-3d' && terrainRenderer) {
+                    onWindowResizeTerrain();
+                }
+                if(tabId === 'tab-int' && solidRenderer) {
+                    onWindowResizeSolid();
+                }
+            }, 50);
+        }
+
+        function openAuthorsModal() { document.getElementById('authors-modal').classList.remove('hidden'); }
+        function closeAuthorsModal() { document.getElementById('authors-modal').classList.add('hidden'); }
+
+        function terrainFunction(x, y) {
+            return 20 + 8 * Math.exp(- (Math.pow(x - 3, 2) + Math.pow(y - 7, 2)) / 4)
+                   - 6 * Math.exp(- (Math.pow(x - 7, 2) + Math.pow(y - 3, 2)) / 4)
+                   + 0.5 * x + 0.3 * y;
+        }
+
+        function partialDerivativeX(x, y) {
+            const exp1 = Math.exp(- (Math.pow(x - 3, 2) + Math.pow(y - 7, 2)) / 4);
+            const exp2 = Math.exp(- (Math.pow(x - 7, 2) + Math.pow(y - 3, 2)) / 4);
+            return 8 * exp1 * (-2 * (x - 3) / 4) - 6 * exp2 * (-2 * (x - 7) / 4) + 0.5;
+        }
+
+        function partialDerivativeY(x, y) {
+            const exp1 = Math.exp(- (Math.pow(x - 3, 2) + Math.pow(y - 7, 2)) / 4);
+            const exp2 = Math.exp(- (Math.pow(x - 7, 2) + Math.pow(y - 3, 2)) / 4);
+            return 8 * exp1 * (-2 * (y - 7) / 4) - 6 * exp2 * (-2 * (y - 3) / 4) + 0.3;
+        }
+
+        // --- THREE.JS: TERRENO ---
+        let terrainScene, terrainCamera, terrainRenderer, terrainMesh;
+        let isWireframe = false, showPoints = true, pointMeshes = [];
+
+        function initTerrain3D() {
+            const container = document.getElementById('webgl-container');
+            if(!container) return;
+
+            terrainScene = new THREE.Scene();
+            terrainScene.background = new THREE.Color(0x0a0a0a);
+
+            const width = container.clientWidth || 600;
+            const height = container.clientHeight || 450;
+
+            terrainCamera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+            terrainCamera.position.set(15, 18, 20);
+            terrainCamera.lookAt(0, 0, 0);
+
+            terrainRenderer = new THREE.WebGLRenderer({ antialias: true });
+            terrainRenderer.setSize(width, height);
+            container.appendChild(terrainRenderer.domElement);
+
+            terrainScene.add(new THREE.AmbientLight(0xffffff, 0.7));
+            const dirLight = new THREE.DirectionalLight(0xff5722, 0.9);
+            dirLight.position.set(10, 20, 10);
+            terrainScene.add(dirLight);
+
+            buildTerrainMesh();
+
+            // Orbit interactivo básico con ratón
+            let isDragging = false, prevMouse = { x: 0, y: 0 };
+            container.addEventListener('mousedown', e => { isDragging = true; prevMouse = { x: e.clientX, y: e.clientY }; });
+            window.addEventListener('mouseup', () => { isDragging = false; });
+            container.addEventListener('mousemove', e => {
+                if(!isDragging || !terrainMesh) return;
+                const dx = e.clientX - prevMouse.x;
+                terrainMesh.rotation.z += dx * 0.005;
+                prevMouse = { x: e.clientX, y: e.clientY };
+            });
+
+            animateTerrain();
+        }
+
+        function buildTerrainMesh() {
+            if (terrainMesh) terrainScene.remove(terrainMesh);
+
+            const geometry = new THREE.PlaneGeometry(12, 12, 40, 40);
+            geometry.rotateX(-Math.PI / 2);
+
+            const posAttr = geometry.attributes.position;
+            for (let i = 0; i < posAttr.count; i++) {
+                const vx = posAttr.getX(i) + 5;
+                const vy = posAttr.getZ(i) + 5;
+                const vz = terrainFunction(vx, vy);
+                posAttr.setY(i, vz * 0.35);
+            }
+            geometry.computeVertexNormals();
+
+            terrainMesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({
+                color: 0xcc4422,
+                wireframe: isWireframe,
+                roughness: 0.8,
+                metalness: 0.2,
+                flatShading: true
+            }));
+            terrainScene.add(terrainMesh);
+            updateCriticalPoints3D();
+        }
+
+        function updateCriticalPoints3D() {
+            pointMeshes.forEach(m => terrainScene.remove(m));
+            pointMeshes = [];
+            if (!showPoints) return;
+
+            const pts = [
+                { x: 3, y: 7, color: 0xff0000 },
+                { x: 7, y: 3, color: 0x0088ff },
+                { x: 5, y: 5, color: 0x00ff88 }
+            ];
+
+            pts.forEach(p => {
+                const z = terrainFunction(p.x, p.y);
+                const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.3, 16, 16), new THREE.MeshBasicMaterial({ color: p.color }));
+                sphere.position.set(p.x - 5, (z * 0.35), p.y - 5);
+                terrainScene.add(sphere);
+                pointMeshes.push(sphere);
+            });
+        }
+
+        function toggleTerrainWireframe() {
+            isWireframe = document.getElementById('toggle-wireframe').checked;
+            buildTerrainMesh();
+        }
+
+        function toggleTerrainPoints() {
+            showPoints = document.getElementById('toggle-points').checked;
+            updateCriticalPoints3D();
+        }
+
+        function resetCamera3D() {
+            if(terrainMesh) terrainMesh.rotation.set(0, 0, 0);
+        }
+
+        function animateTerrain() {
+            requestAnimationFrame(animateTerrain);
+            if(terrainRenderer && terrainScene && terrainCamera) {
+                terrainRenderer.render(terrainScene, terrainCamera);
+            }
+        }
+
+        function onWindowResizeTerrain() {
+            const container = document.getElementById('webgl-container');
+            if(!container || !terrainRenderer) return;
+            terrainCamera.aspect = container.clientWidth / container.clientHeight;
+            terrainCamera.updateProjectionMatrix();
+            terrainRenderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        // --- THREE.JS: SÓLIDO 3D ---
+        let solidScene, solidCamera, solidRenderer, solidMesh;
+
+        function initSolid3D() {
+            const container = document.getElementById('solid-container');
+            if(!container) return;
+
+            solidScene = new THREE.Scene();
+            solidScene.background = new THREE.Color(0x050505);
+
+            const width = container.clientWidth || 400;
+            const height = container.clientHeight || 350;
+
+            solidCamera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+            solidCamera.position.set(4, 3, 5);
+            solidCamera.lookAt(0, 0, 0);
+
+            solidRenderer = new THREE.WebGLRenderer({ antialias: true });
+            solidRenderer.setSize(width, height);
+            container.appendChild(solidRenderer.domElement);
+
+            solidScene.add(new THREE.AmbientLight(0xffffff, 0.7));
+            const dir = new THREE.DirectionalLight(0x008765, 1.0);
+            dir.position.set(5, 5, 5);
+            solidScene.add(dir);
+
+            solidMesh = new THREE.Mesh(
+                new THREE.SphereGeometry(1.5, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2),
+                new THREE.MeshStandardMaterial({ color: 0x006a4e, roughness: 0.3, metalness: 0.4 })
+            );
+            solidScene.add(solidMesh);
+
+            animateSolid();
+        }
+
+        function animateSolid() {
+            requestAnimationFrame(animateSolid);
+            if(solidMesh) solidMesh.rotation.y += 0.005;
+            if(solidRenderer && solidScene && solidCamera) solidRenderer.render(solidScene, solidCamera);
+        }
+
+        function onWindowResizeSolid() {
+            const container = document.getElementById('solid-container');
+            if(!container || !solidRenderer) return;
+            solidCamera.aspect = container.clientWidth / container.clientHeight;
+            solidCamera.updateProjectionMatrix();
+            solidRenderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        // --- CÁLCULOS ADICIONALES ---
+        function calculateDifferential() {
+            const x = parseFloat(document.getElementById('diff-x').value);
+            const y = parseFloat(document.getElementById('diff-y').value);
+            document.getElementById('diff-x-val').innerText = x.toFixed(1);
+            document.getElementById('diff-y-val').innerText = y.toFixed(1);
+
+            const z = terrainFunction(x, y);
+            const dfx = partialDerivativeX(x, y);
+            const dfy = partialDerivativeY(x, y);
+
+            document.getElementById('diff-z').innerText = z.toFixed(3) + " km";
+            document.getElementById('diff-grad').innerText = `(${dfx.toFixed(2)}, ${dfy.toFixed(2)})`;
+            document.getElementById('diff-plane').innerText = `z = ${z.toFixed(3)} + (${dfx.toFixed(2)})(x - ${x.toFixed(1)}) + (${dfy.toFixed(2)})(y - ${y.toFixed(1)})`;
+        }
+
+        function setDiffPoint(x, y) {
+            document.getElementById('diff-x').value = x;
+            document.getElementById('diff-y').value = y;
+            calculateDifferential();
+        }
+
+        function updateRoverSimulation() {
+            const t = parseFloat(document.getElementById('rover-t').value);
+            document.getElementById('rover-t-val').innerText = t.toFixed(2);
+        }
+
+        // Inicialización segura con retardo para asegurar renderizado del DOM
+        window.onload = function() {
+            setTimeout(() => {
+                initTerrain3D();
+                calculateDifferential();
+                updateRoverSimulation();
+                initSolid3D();
+            }, 100);
+        };
+
+        window.addEventListener('resize', () => {
+            onWindowResizeTerrain();
+            onWindowResizeSolid();
+        });
+    </script>
+</body>
+</html>
