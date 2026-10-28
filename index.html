@@ -27,7 +27,8 @@
                         }
                     },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif']
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Courier New', monospace]
                     }
                 }
             }
@@ -37,7 +38,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Three.js CDN para el Terreno 3D y Sólidos -->
+    <!-- Three.js CDN para el Terreno 3D y Videojuego -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -68,11 +69,11 @@
                     <h1 class="text-xl font-extrabold tracking-wide text-white">MARS MATH BASE <span class="text-xs px-2 py-0.5 bg-umes/20 text-umes-light rounded-md border border-umes/40 font-mono ml-2">Proyecto Final 2026</span></h1>
                 </div>
             </div>
-            
+
             <div class="flex flex-wrap items-center gap-3">
                 <div class="text-right bg-gray-900/90 px-4 py-2 rounded-xl border border-gray-800 text-xs">
-                    <span class="text-gray-400 block">Docente: <strong class="text-gray-200">ScD. Juan Carlos Ruiz Castillo</strong>[cite: 53]</span>
-                    <span class="text-gray-400 block">Curso: <strong class="text-umes-light">Matemática IV</strong>[cite: 53]</span>
+                    <span class="text-gray-400 block">Docente: <strong class="text-gray-200">ScD. Juan Carlos Ruiz Castillo</strong></span>
+                    <span class="text-gray-400 block">Curso: <strong class="text-umes-light">Matemática IV</strong></span>
                 </div>
                 <button onclick="openAuthorsModal()" class="px-4 py-2.5 bg-umes hover:bg-umes-dark text-white font-medium rounded-xl text-xs transition-all flex items-center shadow-lg shadow-umes/30">
                     <i class="fa-solid fa-users mr-2"></i> Ver Autores
@@ -85,7 +86,7 @@
     <nav class="bg-gray-900/60 border-b border-gray-800 sticky top-[73px] z-30 backdrop-blur">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex overflow-x-auto space-x-2 py-3">
             <button onclick="switchTab('tab-3d')" id="btn-tab-3d" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap bg-mars-600 text-white shadow-lg shadow-mars-600/30 flex items-center">
-                <i class="fa-solid fa-cube mr-2"></i> 1. Visualizador & Parámetros 3D
+                <i class="fa-solid fa-gamepad mr-2"></i> 1. Videojuego & Explorador Rover
             </button>
             <button onclick="switchTab('tab-diff')" id="btn-tab-diff" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap bg-gray-900 text-gray-400 hover:text-white hover:bg-gray-800 flex items-center">
                 <i class="fa-solid fa-chart-line mr-2"></i> 2. Análisis Diferencial & Gradiente
@@ -108,13 +109,13 @@
     <!-- CONTENIDO PRINCIPAL -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
 
-        <!-- PESTAÑA 1: VISUALIZADOR 3D DE TERRENO CON PARÁMETROS INTERACTIVOS -->
+        <!-- PESTAÑA 1: VIDEOJUEGO DE EXPLORACIÓN Y ROVER EN TERCERA PERSONA -->
         <section id="tab-3d" class="tab-content space-y-6">
             <div class="bg-gray-900/90 border border-gray-800 rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 pb-4 border-b border-gray-800 gap-4">
                     <div>
-                        <span class="text-xs uppercase tracking-widest text-mars-500 font-bold">Fase I y II del Proyecto</span>
-                        <h2 class="text-2xl font-bold text-white mt-1">Renderizado 3D Interactivo del Terreno Marciano</h2>
+                        <span class="text-xs uppercase tracking-widest text-mars-500 font-bold">Modo Videojuego Interactivo</span>
+                        <h2 class="text-2xl font-bold text-white mt-1">Exploración Abierta de Marte en Tercera Persona</h2>
                     </div>
                     <div class="bg-gray-950 px-4 py-2.5 rounded-2xl border border-gray-800 text-xs">
                         <code class="text-umes-light font-mono" id="equation-display">f(x,y) = 20 + 8e<sup>-((x-3)²+(y-7)²)/4</sup> - 6e<sup>-((x-7)²+(y-3)²)/4</sup> + 0.5x + 0.3y</code>
@@ -122,77 +123,57 @@
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                    <!-- Canvas 3D Three.js -->
-                    <div class="lg:col-span-8 bg-black/90 rounded-2xl border border-gray-800 relative overflow-hidden h-[450px] shadow-2xl flex items-center justify-center">
+                    <!-- Canvas 3D Videojuego -->
+                    <div class="lg:col-span-8 bg-black/95 rounded-2xl border border-gray-800 relative overflow-hidden h-[500px] shadow-2xl flex items-center justify-center">
                         <div id="webgl-container" class="w-full h-full cursor-grab active:cursor-grabbing"></div>
-                        <div class="absolute top-4 left-4 bg-gray-950/85 backdrop-blur px-3 py-1.5 rounded-xl border border-gray-800 text-xs text-gray-300 pointer-events-none flex items-center space-x-2">
-                            <i class="fa-solid fa-cube text-mars-500"></i>
-                            <span>Arrastra para rotar • Scroll para zoom</span>
+
+                        <!-- HUD de Instrucciones -->
+                        <div class="absolute top-4 left-4 bg-gray-950/85 backdrop-blur px-4 py-2 rounded-xl border border-gray-800 text-xs text-orange-200 font-mono flex items-center space-x-2 shadow-lg">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                            <span>Usa <strong class="text-white">[↑ ↓ ← →]</strong> para conducir el Rover</span>
                         </div>
-                        <div class="absolute bottom-4 right-4 flex space-x-2">
-                            <button onclick="resetCamera3D()" class="px-3 py-1.5 bg-gray-900/90 hover:bg-gray-800 border border-gray-700 rounded-xl text-xs font-semibold text-gray-200 transition-all shadow-lg">
-                                <i class="fa-solid fa-rotate mr-1 text-umes-light"></i> Centrar Vista
+
+                        <!-- HUD Inferior -->
+                        <div class="absolute bottom-4 left-4 right-4 flex justify-between items-center pointer-events-none">
+                            <div class="bg-gray-950/85 backdrop-blur px-3.5 py-2 rounded-xl border border-gray-800 text-xs font-mono text-orange-300 pointer-events-auto">
+                                <span>ZONA: <strong id="hud-zone" class="text-white">Superficie Abierta</strong></span>
+                            </div>
+                            <button onclick="resetRoverPosition()" class="px-3.5 py-2 bg-gray-900/90 hover:bg-gray-800 border border-gray-700 rounded-xl text-xs font-mono text-gray-200 pointer-events-auto shadow-lg transition-all">
+                                <i class="fa-solid fa-house-chimney mr-1 text-orange-400"></i> Volver al Inicio
                             </button>
                         </div>
                     </div>
 
-                    <!-- Panel de Controles Interactivos para Modificar el Terreno -->
+                    <!-- Panel Lateral de Narrativa y Telemetría -->
                     <div class="lg:col-span-4 space-y-4">
-                        <div class="bg-gray-950/90 p-5 rounded-2xl border border-gray-800 space-y-4">
-                            <h3 class="text-sm font-semibold text-white flex items-center">
-                                <i class="fa-solid fa-sliders mr-2 text-mars-500"></i> Modificar Parámetros del Terreno
+                        <div class="bg-gray-950/90 p-5 rounded-2xl border border-gray-800 space-y-4 font-mono">
+                            <h3 class="text-xs font-bold text-orange-400 uppercase tracking-wider flex items-center">
+                                <i class="fa-solid fa-robot mr-2"></i> Consola AI del Rover
                             </h3>
-                            
-                            <div class="space-y-3 text-xs">
-                                <div>
-                                    <div class="flex justify-between mb-1">
-                                        <span class="text-gray-400">Nivel Base de Referencia (h₀):</span>
-                                        <span id="val-h0" class="text-umes-light font-mono font-bold">20</span>
-                                    </div>
-                                    <input type="range" id="param-h0" min="5" max="35" step="1" value="20" oninput="onParameterChange()" class="w-full h-1.5 bg-gray-800 rounded-lg accent-umes-light">
-                                </div>
 
-                                <div>
-                                    <div class="flex justify-between mb-1">
-                                        <span class="text-gray-400">Intensidad Cresta (A):</span>
-                                        <span id="val-A" class="text-mars-500 font-mono font-bold">8</span>
-                                    </div>
-                                    <input type="range" id="param-A" min="2" max="15" step="0.5" value="8" oninput="onParameterChange()" class="w-full h-1.5 bg-gray-800 rounded-lg accent-mars-500">
-                                </div>
+                            <div id="story-dialogue" class="text-xs text-gray-300 leading-relaxed min-h-[100px] bg-black/60 p-3.5 rounded-xl border border-gray-900">
+                                > Conduzca el vehículo entre los biodomos y plantas experimentales.<br>
+                                > Analice cómo la topografía multivariable permite el cultivo y diseño urbano.
+                            </div>
 
-                                <div>
-                                    <div class="flex justify-between mb-1">
-                                        <span class="text-gray-400">Intensidad Depresión (B):</span>
-                                        <span id="val-B" class="text-blue-400 font-mono font-bold">6</span>
-                                    </div>
-                                    <input type="range" id="param-B" min="1" max="12" step="0.5" value="6" oninput="onParameterChange()" class="w-full h-1.5 bg-gray-800 rounded-lg accent-blue-400">
+                            <div class="space-y-2 text-xs pt-2 border-t border-gray-900">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">POSICIÓN X:</span>
+                                    <span id="pos-x" class="text-orange-300 font-bold">5.00 km</span>
                                 </div>
-
-                                <div>
-                                    <div class="flex justify-between mb-1">
-                                        <span class="text-gray-400">Inclinación Eje X (m):</span>
-                                        <span id="val-m" class="text-gray-200 font-mono font-bold">0.5</span>
-                                    </div>
-                                    <input type="range" id="param-m" min="0" max="2" step="0.1" value="0.5" oninput="onParameterChange()" class="w-full h-1.5 bg-gray-800 rounded-lg accent-gray-400">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">POSICIÓN Y:</span>
+                                    <span id="pos-y" class="text-orange-300 font-bold">5.00 km</span>
                                 </div>
-
-                                <div>
-                                    <div class="flex justify-between mb-1">
-                                        <span class="text-gray-400">Inclinación Eje Y (n):</span>
-                                        <span id="val-n" class="text-gray-200 font-mono font-bold">0.3</span>
-                                    </div>
-                                    <input type="range" id="param-n" min="0" max="2" step="0.1" value="0.3" oninput="onParameterChange()" class="w-full h-1.5 bg-gray-800 rounded-lg accent-gray-400">
+                                <div class="flex justify-between pt-1 border-t border-gray-900">
+                                    <span class="text-gray-500">ELEVACIÓN Z = F(X,Y):</span>
+                                    <span id="pos-z" class="text-emerald-400 font-bold">24.271 km</span>
                                 </div>
                             </div>
 
-                            <div class="pt-2 border-t border-gray-800 flex items-center justify-between">
-                                <label class="flex items-center space-x-2 cursor-pointer text-xs text-gray-300">
-                                    <input type="checkbox" id="toggle-wireframe" onchange="toggleTerrainWireframe()" class="w-3.5 h-3.5 rounded bg-gray-800 border-gray-700 text-mars-500">
-                                    <span>Wireframe</span>
-                                </label>
-                                <button onclick="resetParameters()" class="px-3 py-1.5 bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-xl text-xs font-semibold text-gray-300">
-                                    Restaurar Original
-                                </button>
+                            <div class="bg-black/50 p-3 rounded-xl border border-gray-900 text-[11px] text-gray-400 space-y-1">
+                                <span class="text-orange-400 font-bold block">> Análisis Geofísico:</span>
+                                <span id="story-concept">Acérquese a las cúpulas de la ciudad para activar los informes del proyecto.</span>
                             </div>
                         </div>
                     </div>
@@ -325,7 +306,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="bg-gray-950 p-6 rounded-2xl border border-gray-800">
                         <h3 class="font-bold text-white mb-2">1. Estabilidad</h3>
-                        <p class="text-gray-300 text-xs">El discriminante D > 0 asegura máximo local estable en P₃(5,5)[cite: 48].</p>
+                        <p class="text-gray-300 text-xs">El discriminante D > 0 asegura máximo local estable en P₃(5,5)[: 48].</p>
                     </div>
                     <div class="bg-gray-950 p-6 rounded-2xl border border-gray-800">
                         <h3 class="font-bold text-white mb-2">2. Energía</h3>
@@ -347,23 +328,16 @@
             <button onclick="closeAuthorsModal()" class="absolute top-6 right-6 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             <h3 class="text-xl font-bold text-white mb-4">Integrantes del Equipo</h3>
             <ul class="space-y-2 text-sm text-gray-200">
-                <li class="bg-gray-950 p-3 rounded-xl border border-gray-800">Heidi Gabriela Maldonado Santizo[cite: 1]</li>
-                <li class="bg-gray-950 p-3 rounded-xl border border-gray-800">Mario Javier Corado Falla[cite: 1]</li>
-                <li class="bg-gray-950 p-3 rounded-xl border border-gray-800">Paola Giselle Lucas Minera[cite: 1]</li>
+                <li class="bg-gray-950 p-3 rounded-xl border border-gray-800">Heidi Gabriela Maldonado Santizo</li>
+                <li class="bg-gray-950 p-3 rounded-xl border border-gray-800">Mario Javier Corado Falla</li>
+                <li class="bg-gray-950 p-3 rounded-xl border border-gray-800">Paola Giselle Lucas Minera</li>
             </ul>
         </div>
     </div>
 
-    <!-- SCRIPT DE THREE.JS Y LOGICA INTERACTIVA -->
+    <!-- SCRIPT DE THREE.JS Y LOGICA DEL VIDEOJUEGO & PESTAÑAS -->
     <script>
-        // Parámetros modificables del modelo matemático
-        let modelParams = {
-            h0: 20,
-            A: 8,
-            B: 6,
-            m: 0.5,
-            n: 0.3
-        };
+        let modelParams = { h0: 20, A: 8, B: 6, m: 0.5, n: 0.3 };
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -375,7 +349,7 @@
             document.getElementById('btn-' + tabId).className = "px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap bg-mars-600 text-white shadow-lg shadow-mars-600/30 flex items-center";
 
             setTimeout(() => {
-                if(tabId === 'tab-3d' && terrainRenderer) onWindowResizeTerrain();
+                if(tabId === 'tab-3d' && gameRenderer) onWindowResizeGame();
                 if(tabId === 'tab-int' && solidRenderer) onWindowResizeSolid();
             }, 50);
         }
@@ -383,14 +357,11 @@
         function openAuthorsModal() { document.getElementById('authors-modal').classList.remove('hidden'); }
         function closeAuthorsModal() { document.getElementById('authors-modal').classList.add('hidden'); }
 
-        // Función matemática dinámica basada en los parámetros ajustables
         function terrainFunction(x, y) {
-            const term1 = modelParams.h0;
-            const term2 = modelParams.A * Math.exp(- (Math.pow(x - 3, 2) + Math.pow(y - 7, 2)) / 4);
-            const term3 = modelParams.B * Math.exp(- (Math.pow(x - 7, 2) + Math.pow(y - 3, 2)) / 4);
-            const term4 = modelParams.m * x;
-            const term5 = modelParams.n * y;
-            return term1 + term2 - term3 + term4 + term5;
+            return modelParams.h0
+                   + modelParams.A * Math.exp(- (Math.pow(x - 3, 2) + Math.pow(y - 7, 2)) / 4)
+                   - modelParams.B * Math.exp(- (Math.pow(x - 7, 2) + Math.pow(y - 3, 2)) / 4)
+                   + modelParams.m * x + modelParams.n * y;
         }
 
         function partialDerivativeX(x, y) {
@@ -405,84 +376,49 @@
             return modelParams.A * exp1 * (-2 * (y - 7) / 4) - modelParams.B * exp2 * (-2 * (y - 3) / 4) + modelParams.n;
         }
 
-        // --- ACTUALIZACIÓN EN TIEMPO REAL DESDE LOS SLIDERS ---
-        function onParameterChange() {
-            modelParams.h0 = parseFloat(document.getElementById('param-h0').value);
-            modelParams.A = parseFloat(document.getElementById('param-A').value);
-            modelParams.B = parseFloat(document.getElementById('param-B').value);
-            modelParams.m = parseFloat(document.getElementById('param-m').value);
-            modelParams.n = parseFloat(document.getElementById('param-n').value);
+        // --- MOTOR DEL VIDEOJUEGO 3D (TERCERA PERSONA & ROVER) ---
+        let gameScene, gameCamera, gameRenderer, terrainMesh, roverGroup;
+        let roverPos = { x: 5, y: 5, angle: 0 };
+        let keys = { ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false };
 
-            // Actualizar textos visuales en pantalla
-            document.getElementById('val-h0').innerText = modelParams.h0;
-            document.getElementById('val-A').innerText = modelParams.A;
-            document.getElementById('val-B').innerText = modelParams.B;
-            document.getElementById('val-m').innerText = modelParams.m;
-            document.getElementById('val-n').innerText = modelParams.n;
-
-            // Actualizar la ecuación mostrada
-            document.getElementById('equation-display').innerHTML = `f(x,y) = ${modelParams.h0} + ${modelParams.A}e<sup>-((x-3)²+(y-7)²)/4</sup> - ${modelParams.B}e<sup>-((x-7)²+(y-3)²)/4</sup> + ${modelParams.m}x + ${modelParams.n}y`;
-
-            // Reconstruir el gráfico 3D inmediatamente
-            buildTerrainMesh();
-            calculateDifferential();
-        }
-
-        function resetParameters() {
-            document.getElementById('param-h0').value = 20;
-            document.getElementById('param-A').value = 8;
-            document.getElementById('param-B').value = 6;
-            document.getElementById('param-m').value = 0.5;
-            document.getElementById('param-n').value = 0.3;
-            onParameterChange();
-        }
-
-        // --- THREE.JS: TERRENO ---
-        let terrainScene, terrainCamera, terrainRenderer, terrainMesh;
-        let isWireframe = false, pointMeshes = [];
-
-        function initTerrain3D() {
+        function initMarsGame() {
             const container = document.getElementById('webgl-container');
             if(!container) return;
 
-            terrainScene = new THREE.Scene();
-            terrainScene.background = new THREE.Color(0x0a0a0a);
+            gameScene = new THREE.Scene();
+            gameScene.background = new THREE.Color(0x1a0503);
+            gameScene.fog = new THREE.FogExp2(0x1a0503, 0.04);
 
             const width = container.clientWidth || 600;
-            const height = container.clientHeight || 450;
+            const height = container.clientHeight || 500;
 
-            terrainCamera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-            terrainCamera.position.set(15, 18, 20);
-            terrainCamera.lookAt(0, 0, 0);
+            gameCamera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
 
-            terrainRenderer = new THREE.WebGLRenderer({ antialias: true });
-            terrainRenderer.setSize(width, height);
-            container.appendChild(terrainRenderer.domElement);
+            gameRenderer = new THREE.WebGLRenderer({ antialias: true });
+            gameRenderer.setSize(width, height);
+            container.appendChild(gameRenderer.domElement);
 
-            terrainScene.add(new THREE.AmbientLight(0xffffff, 0.7));
-            const dirLight = new THREE.DirectionalLight(0xff5722, 0.9);
-            dirLight.position.set(10, 20, 10);
-            terrainScene.add(dirLight);
+            gameScene.add(new THREE.AmbientLight(0xffb385, 0.7));
+            const marsSun = new THREE.DirectionalLight(0xffeedd, 1.3);
+            marsSun.position.set(20, 40, 20);
+            gameScene.add(marsSun);
 
-            buildTerrainMesh();
+            buildMarsEcoWorld();
 
-            let isDragging = false, prevMouse = { x: 0, y: 0 };
-            container.addEventListener('mousedown', e => { isDragging = true; prevMouse = { x: e.clientX, y: e.clientY }; });
-            window.addEventListener('mouseup', () => { isDragging = false; });
-            container.addEventListener('mousemove', e => {
-                if(!isDragging || !terrainMesh) return;
-                const dx = e.clientX - prevMouse.x;
-                terrainMesh.rotation.z += dx * 0.005;
-                prevMouse = { x: e.clientX, y: e.clientY };
+            window.addEventListener('keydown', (e) => {
+                if (keys.hasOwnProperty(e.key)) keys[e.key] = true;
+            });
+            window.addEventListener('keyup', (e) => {
+                if (keys.hasOwnProperty(e.key)) keys[e.key] = false;
             });
 
-            animateTerrain();
+            animateGameLoop();
         }
 
-        function buildTerrainMesh() {
-            if (terrainMesh) terrainScene.remove(terrainMesh);
+        function buildMarsEcoWorld() {
+            if (terrainMesh) gameScene.remove(terrainMesh);
 
-            const geometry = new THREE.PlaneGeometry(12, 12, 40, 40);
+            const geometry = new THREE.PlaneGeometry(16, 16, 50, 50);
             geometry.rotateX(-Math.PI / 2);
 
             const posAttr = geometry.attributes.position;
@@ -495,57 +431,170 @@
             geometry.computeVertexNormals();
 
             terrainMesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({
-                color: 0xcc4422,
-                wireframe: isWireframe,
-                roughness: 0.8,
-                metalness: 0.2,
-                flatShading: true
+                color: 0x993d22, roughness: 0.9, metalness: 0.1, flatShading: true
             }));
-            terrainScene.add(terrainMesh);
-            updateCriticalPoints3D();
-        }
+            gameScene.add(terrainMesh);
 
-        function updateCriticalPoints3D() {
-            pointMeshes.forEach(m => terrainScene.remove(m));
-            pointMeshes = [];
-
-            const pts = [
-                { x: 3, y: 7, color: 0xff0000 },
-                { x: 7, y: 3, color: 0x0088ff },
-                { x: 5, y: 5, color: 0x00ff88 }
+            // Biodomos en P1, P2, P3
+            const landmarks = [
+                { x: 3, y: 7, color: 0xff4500 },
+                { x: 7, y: 3, color: 0x1e90ff },
+                { x: 5, y: 5, color: 0x00ffaa }
             ];
 
-            pts.forEach(p => {
-                const z = terrainFunction(p.x, p.y);
-                const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.3, 16, 16), new THREE.MeshBasicMaterial({ color: p.color }));
-                sphere.position.set(p.x - 5, (z * 0.3), p.y - 5);
-                terrainScene.add(sphere);
-                pointMeshes.push(sphere);
+            landmarks.forEach(lm => {
+                const z = terrainFunction(lm.x, lm.y);
+                const dome = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.7, 16, 16, 0, Math.PI * 2, 0, Math.PI / 2),
+                    new THREE.MeshStandardMaterial({ color: lm.color, roughness: 0.1, metalness: 0.5, transparent: true, opacity: 0.7 })
+                );
+                dome.position.set(lm.x - 5, (z * 0.3), lm.y - 5);
+                gameScene.add(dome);
+
+                const plant = new THREE.Mesh(
+                    new THREE.ConeGeometry(0.3, 0.5, 6),
+                    new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.5 })
+                );
+                plant.position.set(lm.x - 5, (z * 0.3) + 0.25, lm.y - 5);
+                gameScene.add(plant);
             });
+
+            // Construir el Rover detallado
+            if (roverGroup) gameScene.remove(roverGroup);
+            roverGroup = new THREE.Group();
+
+            const chassis = new THREE.Mesh(
+                new THREE.BoxGeometry(0.7, 0.25, 1.2),
+                new THREE.MeshStandardMaterial({ color: 0xfacc15, metalness: 0.5, roughness: 0.3 })
+            );
+            chassis.position.y = 0.18;
+            roverGroup.add(chassis);
+
+            const cabin = new THREE.Mesh(
+                new THREE.BoxGeometry(0.45, 0.22, 0.55),
+                new THREE.MeshStandardMaterial({ color: 0x06b6d4, metalness: 0.9, roughness: 0.1, transparent: true, opacity: 0.85 })
+            );
+            cabin.position.set(0, 0.38, -0.05);
+            roverGroup.add(cabin);
+
+            const pole = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.02, 0.02, 0.35),
+                new THREE.MeshStandardMaterial({ color: 0xcbd5e1, metalness: 0.9 })
+            );
+            pole.position.set(0, 0.55, 0.3);
+            roverGroup.add(pole);
+
+            const dish = new THREE.Mesh(
+                new THREE.SphereGeometry(0.12, 8, 8, 0, Math.PI * 2, 0, Math.PI / 2),
+                new THREE.MeshStandardMaterial({ color: 0xcbd5e1, metalness: 0.9 })
+            );
+            dish.rotation.x = Math.PI / 4;
+            dish.position.set(0, 0.72, 0.3);
+            roverGroup.add(dish);
+
+            const wheelGeo = new THREE.CylinderGeometry(0.16, 0.16, 0.15, 12);
+            wheelGeo.rotateZ(Math.PI / 2);
+            const wheelMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 });
+
+            [{x:-0.42, z:0.4}, {x:0.42, z:0.4}, {x:-0.42, z:-0.4}, {x:0.42, z:-0.4}].forEach(pos => {
+                const wheel = new THREE.Mesh(wheelGeo, wheelMat);
+                wheel.position.set(pos.x, 0.1, pos.z);
+                roverGroup.add(wheel);
+            });
+
+            gameScene.add(roverGroup);
         }
 
-        function toggleTerrainWireframe() {
-            isWireframe = document.getElementById('toggle-wireframe').checked;
-            buildTerrainMesh();
-        }
+        function animateGameLoop() {
+            requestAnimationFrame(animateGameLoop);
 
-        function resetCamera3D() {
-            if(terrainMesh) terrainMesh.rotation.set(0, 0, 0);
-        }
+            const speed = 0.06;
+            if (keys.ArrowLeft) roverPos.angle += 0.045;
+            if (keys.ArrowRight) roverPos.angle -= 0.045;
+            if (keys.ArrowUp) {
+                roverPos.x += Math.cos(roverPos.angle) * speed;
+                roverPos.y += Math.sin(roverPos.angle) * speed;
+            }
+            if (keys.ArrowDown) {
+                roverPos.x -= Math.cos(roverPos.angle) * speed;
+                roverPos.y -= Math.sin(roverPos.angle) * speed;
+            }
 
-        function animateTerrain() {
-            requestAnimationFrame(animateTerrain);
-            if(terrainRenderer && terrainScene && terrainCamera) {
-                terrainRenderer.render(terrainScene, terrainCamera);
+            roverPos.x = Math.max(0.5, Math.min(9.5, roverPos.x));
+            roverPos.y = Math.max(0.5, Math.min(9.5, roverPos.y));
+
+            const zVal = terrainFunction(roverPos.x, roverPos.y);
+
+            if (roverGroup) {
+                roverGroup.position.set(roverPos.x - 5, (zVal * 0.3), roverPos.y - 5);
+                roverGroup.rotation.y = -roverPos.angle + Math.PI / 2;
+
+                const camDistX = Math.cos(roverPos.angle) * 3.5;
+                const camDistZ = Math.sin(roverPos.angle) * 3.5;
+
+                gameCamera.position.set(
+                    roverGroup.position.x - camDistX,
+                    roverGroup.position.y + 1.8,
+                    roverGroup.position.z - camDistZ
+                );
+                gameCamera.lookAt(
+                    roverGroup.position.x,
+                    roverGroup.position.y + 0.4,
+                    roverGroup.position.z
+                );
+            }
+
+            document.getElementById('pos-x').innerText = roverPos.x.toFixed(2) + " km";
+            document.getElementById('pos-y').innerText = roverPos.y.toFixed(2) + " km";
+            document.getElementById('pos-z').innerText = zVal.toFixed(3) + " km";
+
+            updateGameNarration(roverPos.x, roverPos.y);
+
+            if (gameRenderer && gameScene && gameCamera) {
+                gameRenderer.render(gameScene, gameCamera);
             }
         }
 
-        function onWindowResizeTerrain() {
+        function updateGameNarration(x, y) {
+            const dialogue = document.getElementById('story-dialogue');
+            const concept = document.getElementById('story-concept');
+            const hudZone = document.getElementById('hud-zone');
+
+            const distP1 = Math.hypot(x - 3, y - 7);
+            const distP2 = Math.hypot(x - 7, y - 3);
+            const distP3 = Math.hypot(x - 5, y - 5);
+
+            if (distP1 < 1.2) {
+                hudZone.innerText = "Cresta P₁ (Biodomo Norte)";
+                dialogue.innerHTML = `> Cresta P₁(3,7) con elevación z = ${terrainFunction(x,y).toFixed(3)} km[: 11].<br>> Máximo local estable (D > 0) ideal para torres y agricultura.`;
+                concept.innerText = "Criterio de la segunda derivada validado con éxito.";
+            } else if (distP2 < 1.2) {
+                hudZone.innerText = "Depresión P₂ (Drenaje)";
+                dialogue.innerHTML = `> Depresión P₂(7,3) con elevación z = ${terrainFunction(x,y).toFixed(3)} km[: 11].<br>> Punto de silla (D < 0) apto para gestión hídrica.`;
+                concept.innerText = "Pendientes pronunciadas analizadas con derivadas parciales.";
+            } else if (distP3 < 1.2) {
+                hudZone.innerText = "Base P₃ (Eco-Ciudad Central)";
+                dialogue.innerHTML = `> Base P₃(5,5) con elevación z = ${terrainFunction(x,y).toFixed(3)} km[: 11].<br>> Centro científico principal de la colonia marciana.`;
+                concept.innerText = "Punto crítico óptimo seleccionado para la base.";
+            } else {
+                hudZone.innerText = "Superficie Abierta";
+                dialogue.innerHTML = `> Coordenadas (${x.toFixed(2)}, ${y.toFixed(2)}).<br>> Conduzca hacia las cúpulas de la ciudad para activar los informes.`;
+                concept.innerText = "Exploración libre evaluando variaciones de pendiente.";
+            }
+        }
+
+        function resetRoverPosition() {
+            roverPos.x = 5;
+            roverPos.y = 5;
+            roverPos.angle = 0;
+        }
+
+        function onWindowResizeGame() {
             const container = document.getElementById('webgl-container');
-            if(!container || !terrainRenderer) return;
-            terrainCamera.aspect = container.clientWidth / container.clientHeight;
-            terrainCamera.updateProjectionMatrix();
-            terrainRenderer.setSize(container.clientWidth, container.clientHeight);
+            if(!container || !gameRenderer) return;
+            gameCamera.aspect = container.clientWidth / container.clientHeight;
+            gameCamera.updateProjectionMatrix();
+            gameRenderer.setSize(container.clientWidth, container.clientHeight);
         }
 
         // --- THREE.JS: SÓLIDO 3D ---
@@ -626,7 +675,7 @@
 
         window.onload = function() {
             setTimeout(() => {
-                initTerrain3D();
+                initMarsGame();
                 calculateDifferential();
                 updateRoverSimulation();
                 initSolid3D();
@@ -634,7 +683,7 @@
         };
 
         window.addEventListener('resize', () => {
-            onWindowResizeTerrain();
+            onWindowResizeGame();
             onWindowResizeSolid();
         });
     </script>
